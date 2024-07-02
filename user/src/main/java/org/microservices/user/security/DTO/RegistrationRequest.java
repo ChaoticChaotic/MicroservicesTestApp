@@ -12,14 +12,13 @@ import javax.validation.constraints.Size;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthRequest {
-    @NotEmpty(message = "authRequest.loginEmpty")
-    @Size(min = 5, message = "authRequest.loginIsTooShort")
+public class RegistrationRequest {
+    @NotEmpty(message = "Username should not be empty")
+    @Size(min = 5, message = "Username is too short!")
     String username;
-    @NotEmpty(message = "authRequest.passwordEmpty")
-    @Size(min = 5, message = "authRequest.passwordIsTooShort")
+    @NotEmpty(message = "Password should not be empty")
+    @Size(min = 5, message = "Password should be longer than 5 symbols")
     String password;
-    @NotEmpty(message = "authRequest.passwordEmpty")
-    @Size(min = 5, message = "authRequest.passwordIsTooShort")
+    @NotEmpty(message = "Password repeat should not be empty")
     String passwordRepeat;
 }

@@ -27,6 +27,7 @@ import java.util.List;
 @Service
 @Transactional
 public class UserServiceImpl implements UserService, UserDetailsService {
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
@@ -73,20 +74,34 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username)
+    public User update(Long id, User user) {
+        User userToUpdate = userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User Not Found!"));
+        userToUpdate.setUsername(user.getUsername());
+        userToUpdate.setEmail(user.getEmail());
+        return userRepository.save(user);
     }
 
     @Override
-    public User findById(Long id) {
+    public User getById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User Not Found!"));
     }
 
     @Override
-    public List<org.microservices.user.model.User> findAll() throws AccessDeniedException {
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new UserServiceException("User Not Found!"));
+    }
+
+    @Override
+    public List<User> getAll() throws AccessDeniedException {
         return userRepository.findAll();
+    }
+
+    @Override
+    public void deleteById(Long id) {
+        userRepository.deleteById(id);
     }
 
     @Override
@@ -115,8 +130,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public void addRoleToUser(String username, String roleName) {
-        User user = userRepository.findByUsername(username)
+    public void addRoleToUser(Long orderId, String roleName) {
+        User user = userRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("User Not Found!"));
         Role role = roleRepository.findByName(roleName)
                 .orElseThrow(() -> new NotFoundException("Role Not Found!"));

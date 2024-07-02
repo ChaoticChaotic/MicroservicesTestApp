@@ -7,6 +7,7 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.microservices.user.model.Role;
 import org.microservices.user.model.User;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,6 +32,9 @@ public class TokenUtil {
     @Value("${jwt.secret}")
     private String SECRET;
 
+    @Value("${jwt.expires_in}")
+    private int EXPIRES_IN;
+
     private final String HEADER_PREFIX = "Bearer ";
 
     private Algorithm getAlgorithm() {
@@ -41,7 +45,7 @@ public class TokenUtil {
         return JWT.create()
                 .withSubject(user.getUsername())
                 .withAudience()
-                .withExpiresAt( )
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRES_IN))
                 .withIssuer(APP_NAME)
                 .withClaim("id", user.getId())
                 .withClaim("roles", user.getRoles()
@@ -51,10 +55,10 @@ public class TokenUtil {
                 .sign(getAlgorithm());
     }
 
-    public String encodeRefreshToken(User appUser) {
+    public String encodeRefreshToken(User user) {
         return JWT.create()
-                .withSubject(appUser.getUsername())
-                .withExpiresAt()
+                .withSubject(user.getUsername())
+                .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRES_IN + 86400000))
                 .withIssuer(APP_NAME)
                 .sign(getAlgorithm());
     }

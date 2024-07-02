@@ -1,7 +1,7 @@
 package org.microservices.user.service.registration;
 
-import org.microservices.user.security.DTO.AuthRequest;
+import org.microservices.user.security.DTO.RegistrationRequest;
 
 public interface RegistrationService {
-    void register(AuthRequest request);
+    void register(RegistrationRequest request);
 }

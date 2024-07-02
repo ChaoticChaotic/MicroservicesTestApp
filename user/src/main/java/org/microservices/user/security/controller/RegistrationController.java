@@ -1,6 +1,6 @@
 package org.microservices.user.security.controller;
 
-import org.microservices.user.security.DTO.AuthRequest;
+import org.microservices.user.security.DTO.RegistrationRequest;
 import org.microservices.user.service.registration.RegistrationService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -19,7 +19,7 @@ public class RegistrationController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> register(@RequestBody @Valid AuthRequest request) {
+    public ResponseEntity<Void> register(@RequestBody @Valid RegistrationRequest request) {
         registrationService.register(request);
         return ResponseEntity.status(201).build();
     }

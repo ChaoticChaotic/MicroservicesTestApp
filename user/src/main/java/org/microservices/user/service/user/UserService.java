@@ -9,10 +9,12 @@ import java.util.List;
 
 public interface UserService {
     void saveRole(Role role);
-    void addRoleToUser(String username, String roleName);
+    void addRoleToUser(Long userId, String roleName);
     User save(User user);
-    User findById(Long id);
-    User findByUsername(String email);
-    List<User> findAll();
+    User update(Long id, User user);
+    User getById(Long id);
+    User findByUsername(String username);
+    List<User> getAll();
+    void deleteById(Long id);
     User changePassword(Long id, @Valid ChangePassRequest request);
 }
