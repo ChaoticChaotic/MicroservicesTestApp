@@ -49,11 +49,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             saveRole(roleAdmin);
         }
         if (userRepository.findByUsername("developer").isEmpty()) {
+            Role role = roleRepository.findByName("ROLE_ADMIN").orElseThrow(() -> new NotFoundException("Role Not Found!"));
             User developer = User
                     .builder()
                     .username("developer")
                     .password("developer")
-                    .roles(List.of(roleAdmin))
+                    .roles(List.of(role))
                     .build();
             save(developer);
         }
@@ -105,7 +106,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public org.microservices.user.model.User changePassword(Long id, @Valid ChangePassRequest request) {
+    public User changePassword(Long id, @Valid ChangePassRequest request) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User Not Found!"));
 //        if (Objects.isNull(request.getOldPassword())
 //                || Objects.isNull(request.getNewPassword())

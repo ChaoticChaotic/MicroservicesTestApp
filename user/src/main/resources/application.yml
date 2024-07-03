@@ -1,0 +1,37 @@
+server:
+  port: 8000
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-stacktrace: never
+    include-exception: true
+
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
+  datasource:
+    url: jdbc:postgresql://localhost:5433/user
+    username: sasha
+    password:
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  jpa:
+    show-sql: false
+    generate-ddl: true
+    hibernate:
+      ddl-auto: update
+
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        jdbc:
+          batch_size: 25
+
+jwt:
+  expires_in: 604800000
+  secret: secret
+
+app:
+  name: user

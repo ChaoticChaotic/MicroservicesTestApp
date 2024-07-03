@@ -14,6 +14,7 @@ import java.util.Collection;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "user_table")
 public class User {
     @SequenceGenerator(
             name = "user_sequence",

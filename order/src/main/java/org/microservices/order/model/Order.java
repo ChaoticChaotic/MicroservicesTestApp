@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "order_table")
 public class Order {
     @SequenceGenerator(
             name = "user_sequence",
