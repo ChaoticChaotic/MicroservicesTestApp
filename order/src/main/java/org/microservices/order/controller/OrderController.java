@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/api/orders/")
+@RequestMapping(value = "/api/orders")
 public class OrderController {
 
     private final OrderServices orderServices;

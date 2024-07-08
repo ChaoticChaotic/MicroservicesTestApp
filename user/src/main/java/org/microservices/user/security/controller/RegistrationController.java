@@ -6,10 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 
-@RequestMapping("/auth/registration")
+@RestController
 public class RegistrationController {
 
     private final RegistrationService registrationService;
@@ -18,7 +19,7 @@ public class RegistrationController {
         this.registrationService = registrationService;
     }
 
-    @PostMapping
+    @PostMapping(value = "/auth/registration")
     public ResponseEntity<Void> register(@RequestBody @Valid RegistrationRequest request) {
         registrationService.register(request);
         return ResponseEntity.status(201).build();

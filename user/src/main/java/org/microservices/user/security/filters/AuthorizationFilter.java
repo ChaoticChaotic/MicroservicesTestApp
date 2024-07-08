@@ -2,15 +2,15 @@ package org.microservices.user.security.filters;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.java.Log;
 import org.microservices.user.security.util.TokenUtil;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
@@ -28,8 +28,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        if (request.getServletPath().equals("/auth/login") ||
-                request.getServletPath().equals("/auth/refresh")) {
+        if (request.getServletPath().contains("/api/auth")) {
             filterChain.doFilter(request, response);
         } else {
             String accessToken = tokenUtil.getToken(request);
@@ -39,8 +38,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext()
                             .setAuthentication(tokenUtil.getContextTokenFromDecodedJWT(decodedJWT));
                     filterChain.doFilter(request, response);
-                }
-                catch (JWTVerificationException e) {
+                } catch (JWTVerificationException e) {
                     log.warning("JWTError: " + e.getMessage());
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 }

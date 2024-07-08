@@ -17,7 +17,7 @@ import java.util.List;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
 
 @RestController
-@RequestMapping(value = "/api/users/")
+@RequestMapping(value = "/api/users")
 public class UserController {
 
     private final UserService userService;
@@ -42,9 +42,8 @@ public class UserController {
         return ResponseEntity.ok().body(userService.getById(id));
     }
 
-
     @PostMapping
-    public ResponseEntity<User> save(RegistrationRequest registrationRequest) {
+    public ResponseEntity<User> save(@RequestBody RegistrationRequest registrationRequest) {
         return ResponseEntity.status(201).body(userService.save(userMapper.requestToUser(registrationRequest)));
     }
 
@@ -68,4 +67,6 @@ public class UserController {
                 .refreshToken(tokenUtil.encodeRefreshToken(user))
                 .build());
     }
+
+
 }

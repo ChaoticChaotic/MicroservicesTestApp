@@ -1,11 +1,12 @@
 package org.microservices.user.service.user;
 
-import jakarta.annotation.PostConstruct;
+
 import org.microservices.user.model.Role;
 import org.microservices.user.model.User;
 import org.microservices.user.repository.RoleRepository;
 import org.microservices.user.repository.UserRepository;
 import org.microservices.user.security.DTO.ChangePassRequest;
+import org.microservices.user.security.exceptions.BadRequestException;
 import org.microservices.user.security.exceptions.NotFoundException;
 import org.microservices.user.security.exceptions.UserServiceException;
 import org.springframework.security.access.AccessDeniedException;
@@ -17,11 +18,13 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-
+import java.util.Objects;
+import java.util.regex.Pattern;
 
 
 @Service
@@ -48,6 +51,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (roleRepository.findByName("ROLE_ADMIN").isEmpty()) {
             saveRole(roleAdmin);
         }
+        Role roleUser = Role.builder()
+                .name("ROLE_USER")
+                .build();
+        if (roleRepository.findByName("ROLE_USER").isEmpty()) {
+            saveRole(roleUser);
+        }
         if (userRepository.findByUsername("developer").isEmpty()) {
             Role role = roleRepository.findByName("ROLE_ADMIN").orElseThrow(() -> new NotFoundException("Role Not Found!"));
             User developer = User
@@ -63,13 +72,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public User save(User user) {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
-            throw new UserServiceException("User Not Found!");
+            throw new UserServiceException("User already exists!");
         }
-//        if (!Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,20}$", newPassword)) {
-//            throw new UserServiceException(
-//                    "Пароль должен содержать от 9 до 20 символов," +
-//                            " хотя-бы одну цифру, заглавные и строчные буквы и не содержать пробелов");
-//        }
+        if (!Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,20}$", user.getPassword())) {
+            //Here we are can regulate pass complexity
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
@@ -102,19 +109,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public void deleteById(Long id) {
-        userRepository.deleteById(id);
+        User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User Not Found!"));
+        userRepository.delete(user);
     }
 
     @Override
     public User changePassword(Long id, @Valid ChangePassRequest request) {
         User user = userRepository.findById(id).orElseThrow(() -> new NotFoundException("User Not Found!"));
-//        if (Objects.isNull(request.getOldPassword())
-//                || Objects.isNull(request.getNewPassword())
-//                || Objects.isNull(request.getNewPasswordConfirmation())) {
-//            throw new BadRequestException(
-//                    messageSource.getMessage("badRequest.fieldsEmpty", null, LocaleContextHolder.getLocale())
-//            );
-//        }
+        if (Objects.isNull(request.getOldPassword())
+                || Objects.isNull(request.getNewPassword())
+                || Objects.isNull(request.getNewPasswordConfirmation())) {
+            throw new BadRequestException("Old and New Password Are Required!");
+        }
         if (!BCrypt.checkpw(request.getOldPassword(), user.getPassword())) {
             throw new UserServiceException("Old Password Incorrect!");
         }
