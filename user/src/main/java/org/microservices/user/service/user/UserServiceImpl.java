@@ -74,9 +74,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new UserServiceException("User already exists!");
         }
-        if (!Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,20}$", user.getPassword())) {
-            //Here we are can regulate pass complexity
-        }
+//        if (!Pattern.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{6,20}$", user.getPassword())) {
+//            //Here we are can regulate pass complexity
+//        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
