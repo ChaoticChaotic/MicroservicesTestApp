@@ -8,6 +8,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 public interface UserService {
+    boolean existsById(Long id);
     void saveRole(Role role);
     void addRoleToUser(Long userId, String roleName);
     User save(User user);

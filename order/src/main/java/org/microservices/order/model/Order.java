@@ -1,10 +1,10 @@
 package org.microservices.order.model;
 
-import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -26,6 +26,7 @@ public class Order {
     private Long id;
     @Column(unique = true)
     private String orderId;
+    @Column(nullable = false)
     private Long userId;
     private String product, quantity, price, status;
 }

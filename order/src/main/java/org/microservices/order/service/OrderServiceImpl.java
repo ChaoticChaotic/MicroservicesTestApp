@@ -1,23 +1,36 @@
 package org.microservices.order.service;
 
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.microservices.order.controller.UserClient;
+import org.microservices.order.exceptions.BadRequestException;
 import org.microservices.order.model.Order;
 import org.microservices.order.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class OrderServiceImpl implements OrderServices{
 
     private final OrderRepository orderRepository;
+    private final UserClient userClient;
+    private final KafkaService kafkaService;
 
-    public OrderServiceImpl(OrderRepository orderRepository) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserClient userClient, KafkaService kafkaService) {
         this.orderRepository = orderRepository;
+        this.userClient = userClient;
+        this.kafkaService = kafkaService;
     }
 
     @Override
     public Order save(Order order) {
-        //Add kafka check that user exists
+        if (Objects.isNull(order.getUserId())) {
+            throw new BadRequestException("user id is required");
+        } else if (!userClient.existsById(order.getUserId())) {
+            throw new BadRequestException("user do not exists");
+        }
+        kafkaService.sendMessage("orderCreated", "created");
         return orderRepository.save(order);
     }
 

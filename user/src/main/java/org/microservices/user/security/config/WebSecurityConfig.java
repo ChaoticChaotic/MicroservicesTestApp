@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,11 +29,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
+
 @Configuration
 @EnableWebSecurity
 @AllArgsConstructor
-@EnableMethodSecurity(securedEnabled = true, jsr250Enabled = true)
-public class WebSecurityConfig {
+public class WebSecurityConfig  {
 
     private final UserServiceImpl userService;
     private final PasswordEncoder passwordEncoder;
@@ -79,7 +81,7 @@ public class WebSecurityConfig {
                 .exceptionHandling((exceptions) -> exceptions
                         .authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
                 .httpBasic(Customizer.withDefaults())
-                .sessionManagement(httpSecuritySessionManagementConfigurer -> httpSecuritySessionManagementConfigurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+                .sessionManagement().sessionCreationPolicy(STATELESS);
 
         return http.build();
     }

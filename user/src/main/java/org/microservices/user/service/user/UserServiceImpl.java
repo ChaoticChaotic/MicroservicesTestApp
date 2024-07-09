@@ -20,11 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
-import java.util.regex.Pattern;
+import java.util.*;
 
 
 @Service
@@ -129,6 +125,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));
         return userRepository.save(user);
+    }
+
+    @Override
+    public boolean existsById(Long id) {
+        Optional<User> optionalUser = userRepository.findById(id);
+        return optionalUser.isPresent();
     }
 
     @Override

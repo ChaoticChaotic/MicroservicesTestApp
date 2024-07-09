@@ -32,6 +32,10 @@ public class UserController {
         this.userMapper = userMapper;
     }
 
+    @GetMapping(value = "/exists/{id}")
+    public ResponseEntity<Boolean> existsById(@PathVariable Long id) {
+        return ResponseEntity.ok().body(userService.existsById(id));
+    }
     @GetMapping
     public ResponseEntity<List<User>> getAll() { //Should return DTO instead of actual entity
         return ResponseEntity.ok().body(userService.getAll());

@@ -30,7 +30,7 @@ public class OrderController {
 
 
     @PostMapping
-    public ResponseEntity<Order> save(Order order) {
+    public ResponseEntity<Order> save(@RequestBody Order order) {
         return ResponseEntity.status(201).body(orderServices.save(order));
     }
 
