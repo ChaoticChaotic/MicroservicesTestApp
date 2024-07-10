@@ -128,6 +128,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public void addOrderId(Long id, String orderId) {
+        userRepository.findById(id).ifPresent(user -> {
+            user.getOrderIds().add(orderId);
+            userRepository.save(user);
+        });
+    }
+
+    @Override
     public boolean existsById(Long id) {
         Optional<User> optionalUser = userRepository.findById(id);
         return optionalUser.isPresent();

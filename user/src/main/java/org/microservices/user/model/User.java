@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Data
@@ -33,5 +34,7 @@ public class User {
     private String password;
     @ManyToMany(fetch = FetchType.EAGER)
     private Collection<Role> roles;
+    @ElementCollection
+    private List<String> orderIds;
     private String email;
 }

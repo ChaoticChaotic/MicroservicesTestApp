@@ -18,4 +18,5 @@ public interface UserService {
     List<User> getAll();
     void deleteById(Long id);
     User changePassword(Long id, @Valid ChangePassRequest request);
+    void addOrderId(Long id, String orderId);
 }

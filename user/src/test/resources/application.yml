@@ -1,0 +1,37 @@
+spring:
+  profiles:
+    active: test
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    hikari:
+      initializationFailTimeout: -1
+  jackson:
+    serialization:
+      fail-on-empty-beans: false
+  jpa:
+    show-sql: true
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        order_inserts: true
+        order_updates: true
+        jdbc:
+          batch_size: 25
+        format_sql: true
+  main:
+    banner-mode: off
+  output:
+    ansi:
+      enabled: always
+
+jwt:
+  expires_in: 604800000
+  secret: secret
+
+app:
+  name: user

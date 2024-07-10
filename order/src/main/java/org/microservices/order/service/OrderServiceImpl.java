@@ -1,6 +1,5 @@
 package org.microservices.order.service;
 
-import org.apache.kafka.clients.producer.KafkaProducer;
 import org.microservices.order.controller.UserClient;
 import org.microservices.order.exceptions.BadRequestException;
 import org.microservices.order.model.Order;
@@ -9,18 +8,19 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @Service
 public class OrderServiceImpl implements OrderServices{
 
     private final OrderRepository orderRepository;
     private final UserClient userClient;
-    private final KafkaService kafkaService;
+    private final KafkaProducer kafkaProducer;
 
-    public OrderServiceImpl(OrderRepository orderRepository, UserClient userClient, KafkaService kafkaService) {
+    public OrderServiceImpl(OrderRepository orderRepository, UserClient userClient, KafkaProducer kafkaProducer) {
         this.orderRepository = orderRepository;
         this.userClient = userClient;
-        this.kafkaService = kafkaService;
+        this.kafkaProducer = kafkaProducer;
     }
 
     @Override
@@ -30,7 +30,8 @@ public class OrderServiceImpl implements OrderServices{
         } else if (!userClient.existsById(order.getUserId())) {
             throw new BadRequestException("user do not exists");
         }
-        kafkaService.sendMessage("orderCreated", "created");
+        order.setOrderId(UUID.randomUUID().toString());
+        kafkaProducer.sendMessage("orderCreated", "user=" + order.getUserId() + ",order=" + order.getOrderId());
         return orderRepository.save(order);
     }
 
