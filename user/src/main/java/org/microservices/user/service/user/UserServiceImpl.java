@@ -54,7 +54,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             saveRole(roleUser);
         }
         if (userRepository.findByUsername("developer").isEmpty()) {
-            Role role = roleRepository.findByName("ROLE_ADMIN").orElseThrow(() -> new NotFoundException("Role Not Found!"));
+            Role role = roleRepository.findByName("ROLE_ADMIN")
+                    .orElseThrow(() -> new NotFoundException("Role Not Found!"));
             User developer = User
                     .builder()
                     .username("developer")
